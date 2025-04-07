@@ -1,50 +1,62 @@
-// 1. Obtener referencia a elementos del DOM (tabla de clima, historial de consultas, botón de vaciar historial)
+document.addEventListener('DOMContentLoaded', () => {
+    const params = new URLSearchParams(window.location.search);
+    const ciudadSeleccionada = params.get('city');
 
-// 2. Definir función para obtener parámetros GET de la URL (ciudad seleccionada)
-function obtenerParametroGET(nombreParametro) {
-}
+    const datos = [
+        { "ciudad": "Buenos Aires", "temperatura": 20, "condicion": "Mayormente soleado" },
+        { "ciudad": "Santiago", "temperatura": 22, "condicion": "Parcialmente nublado" },
+        { "ciudad": "Lima", "temperatura": 25, "condicion": "Nublado" },
+        { "ciudad": "Ciudad de México", "temperatura": 18, "condicion": "Lluvioso" },
+        { "ciudad": "São Paulo", "temperatura": 23, "condicion": "Mayormente soleado" },
+        { "ciudad": "Bogotá", "temperatura": 17, "condicion": "Lluvia ligera" },
+        { "ciudad": "Montevideo", "temperatura": 19, "condicion": "Mayormente despejado" }
+    ];
 
-// 3. Función para obtener información de clima de una ciudad desde localStorage
-function obtenerInfoClima(ciudad) {
-    // Obtener los datos del clima almacenados en localStorage
-    // Buscar la ciudad en los datos obtenidos
-    if (ciudadEncontrada) {
-        // Mostrar la información del clima en la tabla
-        // Agregar la ciudad al historial en localStorage
-    } else {
-        console.error(`No se encontró información para la ciudad ${ciudad}`);
-        // Manejar el caso donde no se encuentra la ciudad en los datos
+    const ciudadData = datos.find(c => c.ciudad === ciudadSeleccionada);
+
+    if (!ciudadData) {
+        alert('No se encontró información para la ciudad seleccionada.');
+        return;
     }
-}
 
-// 4. Función para mostrar dinámicamente el clima de la ciudad seleccionada en la tabla
-function mostrarClimaEnTabla(ciudad) {
-}
+    mostrarClima(ciudadData);
+    guardarEnHistorial(ciudadData);
+    mostrarHistorial();
 
-// 5. Función para agregar una ciudad al historial en localStorage
-function agregarCiudadAHistorial(ciudad) {
-    // Evitar duplicados en el historial
-    // Actualizar la lista en el DOM
-}
-
-// 6. Función para actualizar el historial en el DOM desde localStorage
-function actualizarHistorialEnDOM() {
-    // Limpiar el historial actual
-    // Obtener el array de historial desde el LocalStorage
-    // Recorrer el historial y cargar en el dom
-}
-
-// 7. Función para vaciar el historial de consultas en localStorage y en el DOM
-function vaciarHistorial() {
-    // Vaciar historial en localStorage
-    // Vaciar la lista de historial en el DOM
-}
-
-// 8. Obtener la ciudad seleccionada desde los parámetros GET y obtener su información de clima al cargar la página
-document.addEventListener('DOMContentLoaded', function() {
-    // obtener parámetros GET de la URL (ciudad seleccionada)
-    // obtener información de clima de una ciudad desde localStorage
-    // actualizar el historial en el DOM desde localStorage
+    document.getElementById('limpiarHistorial').addEventListener('click', () => {
+        localStorage.removeItem('historialClima');
+        mostrarHistorial();
+    });
 });
 
-// 9. Manejar evento de clic en el botón de vaciar historial para eliminar todas las consultas anteriores
+function mostrarClima(data) {
+    const tabla = document.getElementById('tablaClima');
+    tabla.innerHTML = `
+        <tr><th>Ciudad</th><th>Temperatura</th><th>Condición</th></tr>
+        <tr>
+            <td>${data.ciudad}</td>
+            <td>${data.temperatura}°C</td>
+            <td>${data.condicion}</td>
+        </tr>
+    `;
+}
+
+function guardarEnHistorial(data) {
+    const historial = JSON.parse(localStorage.getItem('historialClima')) || [];
+    historial.push({
+        ...data,
+        fecha: new Date().toLocaleString()
+    });
+    localStorage.setItem('historialClima', JSON.stringify(historial));
+}
+
+function mostrarHistorial() {
+    const historial = JSON.parse(localStorage.getItem('historialClima')) || [];
+    const ul = document.getElementById('historialConsultas');
+    ul.innerHTML = '';
+    historial.forEach(item => {
+        const li = document.createElement('li');
+        li.textContent = `${item.fecha} - ${item.ciudad}: ${item.temperatura}°C, ${item.condicion}`;
+        ul.appendChild(li);
+    });
+}

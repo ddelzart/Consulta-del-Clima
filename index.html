@@ -1,24 +1,39 @@
+<!-- index.html -->
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Consulta de Clima - Selección de Ciudad</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/dark.css"></head>
+    <title>Consulta de Clima</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/dark.css">
+</head>
 <body>
-    <h1>Consulta de Clima - Selección de Ciudad</h1>
-    <form id="cityForm" action="clima.html" method="GET">
-        <label for="selectCity">Selecciona una ciudad:</label>
-        <select id="selectCity" name="city">
-            <!-- Aquí se cargarán las opciones de ciudades desde JavaScript -->
+    <h1>Consulta de Clima</h1>
+
+    <form id="formClima">
+        <label for="city">Selecciona una ciudad:</label>
+        <select name="city" id="city" required>
+            <option value="">--Seleccionar--</option>
+            <option value="Buenos Aires">Buenos Aires</option>
+            <option value="Santiago">Santiago</option>
+            <option value="Lima">Lima</option>
+            <option value="Ciudad de México">Ciudad de México</option>
+            <option value="São Paulo">São Paulo</option>
+            <option value="Bogotá">Bogotá</option>
+            <option value="Montevideo">Montevideo</option>
         </select>
-        <br>
-        <button type="submit">Consultar Clima</button>
+        <br><br>
+        <button type="submit">Consultar</button>
     </form>
 
-    <br>
-    <a href="clima.html">Ir a la página de clima</a>
-
-    <script src="./js/index.js"></script>
+    <script>
+        document.getElementById('formClima').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const ciudad = document.getElementById('city').value;
+            if (ciudad) {
+                window.location.href = `clima.html?city=${encodeURIComponent(ciudad)}`;
+            }
+        });
+    </script>
 </body>
 </html>
